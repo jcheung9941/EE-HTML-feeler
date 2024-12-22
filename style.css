@@ -8,3 +8,20 @@ nav ul {
 body {
     background-color: #D3D3D3;
 }
+
+#statDiv {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    max-width: 50vw;
+}
+
+#cargoDiv {
+    max-width: 50vw;
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr 1fr;
+}
+
+#cargoDiv h2:first-child {
+    grid-column: 1/5;
+    text-align: center;
+}

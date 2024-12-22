@@ -1,52 +1,74 @@
 const shipList = arr
 // getShipDetails() //need to modify to get correct url- ?&{type}&id=&{uid.split(':')[1]}
+const cargo = { weight: 0, volume: 0, ships: {} }
 
-let isLoaded = true
+let isLoaded = true //default false. probably state. if done at all.
 const loading = document.getElementById('loading')
 if (isLoaded) {
+    const main = document.querySelector('#main')
+
     loading.parentNode.removeChild(loading)
-    const selectorDiv = document.createElement('div')
-    selectorDiv.id = 'addShip'
-    const select = document.createElement('select')
-    select.onchange = () => {
-        document.querySelector('#weight').innerText = shipList.find((element)=>{return element.shipName === document.querySelector('select').value}).weight
-        document.querySelector('#volume').innerText = shipList.find((element)=>{return element.shipName === document.querySelector('select').value}).volume
-        document.querySelector('#quantity').innerText = document.querySelector('#quantity-input').value
-    }
-    shipList.map((element) => {
-        const option = document.createElement('option')
+
+    const selectorDiv = ce('div')
+    selectorDiv.id = 'selectorDiv'
+    const select = ce('select')
+    select.oninput = updateSelected //update selected entity stats
+    shipList.map((element) => { //populate dropdown
+        const option = ce('option')
         option.innerText = element.shipName
         select.appendChild(option)
     })
     selectorDiv.appendChild(select)
-    const quantity = document.createElement('input')
-    quantity.type = 'text'
+    const span = ce('span')
+    span.innerText = ' * '
+    selectorDiv.appendChild(span)
+    const quantity = ce('input')
+    quantity.type = 'number'
     quantity.name = 'quantity'
     quantity.id = 'quantity-input'
     quantity.value = 1
+    quantity.oninput = updateSelected
     selectorDiv.appendChild(quantity)
-    const button = document.createElement('button')
+    const button = ce('button')
     button.innerText = 'Add'
-    button.onclick = ()=>{
-        console.log('hello world')
-    }
+    button.onclick = addCargo
     selectorDiv.appendChild(button)
-    document.querySelector('#main').appendChild(selectorDiv)
-    
-    const statDiv = document.createElement('div')
-    statDiv.id = 'selectedStats'
-    const stats = ['weight', 'volume', 'quantity']
-    stats.map((element)=>{
-        const p = document.createElement('p')
+    main.appendChild(selectorDiv) //add dropdown, *, quantity, button to dom
+
+    const statDiv = ce('div')
+    statDiv.id = 'statDiv'
+    const stats = ['weight', 'volume', 'quantity', 'total-weight', 'total-volume']
+    stats.map((element) => {
+        const p = ce('p')
         p.innerText = `${element}: `
-        const span = document.createElement('span')
+        const span = ce('span')
         span.id = element
-        span.innerText = shipList.find((element)=>{return element.shipName === document.querySelector('select').value})[element]
-        if(element === 'quantity') {span.innerText = document.querySelector('#quantity-input').value}
+        if (element.split('-').length === 1) { //initial fill
+            if (element === 'quantity') { span.innerText = document.querySelector('#quantity-input').value } else {
+                span.innerText = shipList.find((ship) => { return ship.shipName === document.querySelector('select').value })[element].toLocaleString()
+            }
+        } else {
+            span.innerText = shipList.find((ship) => { return ship.shipName === document.querySelector('select').value })[element.split('-')[1]].toLocaleString()
+            p.innerText = element.replace('-', ' ') + ': '
+        }
+        p.innerText = p.innerText.replace(p.innerText[0], p.innerText[0].toUpperCase())
         p.appendChild(span)
         statDiv.appendChild(p)
     })
-    document.querySelector('#main').appendChild(statDiv)
+    main.appendChild(statDiv) //add stats for selected ships
+
+    const cargoDiv = ce('div')
+    cargoDiv.id = 'cargoDiv'
+    const h2 = ce('h2')
+    h2.innerText = 'Cargo'
+    cargoDiv.appendChild(h2)
+    const cargoDivHeaders = ['Name', 'Quantity', 'Weight', 'Volume']
+    cargoDivHeaders.map((element) => {
+        const h3 = ce('h3')
+        h3.innerText = element
+        cargoDiv.appendChild(h3)
+    })
+    main.appendChild(cargoDiv)
 }
 
 
@@ -81,13 +103,30 @@ if (isLoaded) {
 
 
 
+function updateSelected() {
+    const weight = shipList.find((ship) => { return ship.shipName === document.querySelector('select').value }).weight
+    const volume = shipList.find((ship) => { return ship.shipName === document.querySelector('select').value }).volume
+    const quantity = +document.querySelector('#quantity-input').value
+    document.querySelector('#weight').innerText = weight.toLocaleString()
+    document.querySelector('#volume').innerText = volume.toLocaleString()
+    document.querySelector('#quantity').innerText = quantity.toLocaleString()
+    document.querySelector('#total-weight').innerText = (weight * quantity).toLocaleString()
+    document.querySelector('#total-volume').innerText = (volume * quantity).toLocaleString()
+}
+
+function addCargo() {
+    const ship = shipList.find((ship) => { return ship.shipName === document.querySelector('select').value })
+    let quantity = +document.querySelector('#quantity-input').value
+    if (cargo.ships[ship.shipName]) { quantity += cargo.ships[ship.shipName].quantity }
+    cargo.weight += ship.weight
+    cargo.volume += ship.volume
+    cargo.ships[ship.shipName] = { quantity: quantity, stats: ship }
+    //add handling to add to cargoDiv
+}
 
 
-
-
-
-
-
+//got too tired of typing the whole thing out
+function ce(arg) { return document.createElement(arg) }
 
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms))
@@ -148,6 +187,7 @@ async function getShipDetails() {
                     images: data.images,
                 }
 
+                if (i + 1 === shipList.length()) { isLoaded = true }
                 console.log("counter:", i, "details:", shipList)
             })
 
