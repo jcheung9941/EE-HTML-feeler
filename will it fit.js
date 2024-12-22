@@ -116,12 +116,22 @@ function updateSelected() {
 
 function addCargo() {
     const ship = shipList.find((ship) => { return ship.shipName === document.querySelector('select').value })
+    const cargoDivHeaders = ['shipName', 'quantity', 'weight', 'volume']
     let quantity = +document.querySelector('#quantity-input').value
+    cargoDivHeaders.map((element) => {
+        const p = ce('p')
+        if (element != 'quantity') {
+            p.innerText = ship[element].toLocaleString()
+        } else {
+            p.innerText = quantity.toLocaleString()
+        }
+        cargoDiv.appendChild(p)
+    })
     if (cargo.ships[ship.shipName]) { quantity += cargo.ships[ship.shipName].quantity }
+    cargo.ships[ship.shipName] = { quantity: quantity, stats: ship }
     cargo.weight += ship.weight
     cargo.volume += ship.volume
-    cargo.ships[ship.shipName] = { quantity: quantity, stats: ship }
-    //add handling to add to cargoDiv
+    document.querySelector('#cargoDiv h2').innerText = `Cargo (${cargo.weight.toLocaleString()}T / ${cargo.volume.toLocaleString()}m³ )`
 }
 
 
