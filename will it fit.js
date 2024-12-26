@@ -5,97 +5,20 @@ const cargo = { weight: 0, volume: 0, ships: {} }
 let isLoaded = true //default false. probably state. if done at all.
 const loading = document.getElementById('loading')
 if (isLoaded) {
-    const main = document.querySelector('#main')
-
     loading.parentNode.removeChild(loading)
+    while(document.querySelector('.hidden')) {
+        document.querySelector('.hidden').classList.remove('hidden')
+    }
 
-    const selectorDiv = ce('div')
-    selectorDiv.id = 'selectorDiv'
-    const select = ce('select')
+    const select = document.createElement('select')
     select.oninput = updateSelected //update selected entity stats
     shipList.map((element) => { //populate dropdown
-        const option = ce('option')
+        const option = document.createElement('option')
         option.innerText = element.shipName
         select.appendChild(option)
     })
-    selectorDiv.appendChild(select)
-    const span = ce('span')
-    span.innerText = ' * '
-    selectorDiv.appendChild(span)
-    const quantity = ce('input')
-    quantity.type = 'number'
-    quantity.name = 'quantity'
-    quantity.id = 'quantity-input'
-    quantity.value = 1
-    quantity.oninput = updateSelected
-    selectorDiv.appendChild(quantity)
-    const button = ce('button')
-    button.innerText = 'Add'
-    button.onclick = addCargo
-    selectorDiv.appendChild(button)
-    main.appendChild(selectorDiv) //add dropdown, *, quantity, button to dom
-
-    const statDiv = ce('div')
-    statDiv.id = 'statDiv'
-    const stats = ['weight', 'volume', 'quantity', 'total-weight', 'total-volume']
-    stats.map((element) => {
-        const p = ce('p')
-        p.innerText = `${element}: `
-        const span = ce('span')
-        span.id = element
-        if (element.split('-').length === 1) { //initial fill
-            if (element === 'quantity') { span.innerText = document.querySelector('#quantity-input').value } else {
-                span.innerText = shipList.find((ship) => { return ship.shipName === document.querySelector('select').value })[element].toLocaleString()
-            }
-        } else {
-            span.innerText = shipList.find((ship) => { return ship.shipName === document.querySelector('select').value })[element.split('-')[1]].toLocaleString()
-            p.innerText = element.replace('-', ' ') + ': '
-        }
-        p.innerText = p.innerText.replace(p.innerText[0], p.innerText[0].toUpperCase())
-        p.appendChild(span)
-        statDiv.appendChild(p)
-    })
-    main.appendChild(statDiv) //add stats for selected ships
-
-    const cargoDiv = ce('div')
-    cargoDiv.id = 'cargoDiv'
-    const h2 = ce('h2')
-    h2.innerText = 'Cargo'
-    cargoDiv.appendChild(h2)
-    const cargoDivHeaders = ['Name', 'Quantity', 'Weight', 'Volume']
-    cargoDivHeaders.map((element) => {
-        const h3 = ce('h3')
-        h3.innerText = element
-        cargoDiv.appendChild(h3)
-    })
-    main.appendChild(cargoDiv)
+    document.querySelector('#selectorDiv').insertBefore(select, document.querySelector('span'))
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -127,16 +50,12 @@ function addCargo() {
         }
         cargoDiv.appendChild(p)
     })
+    cargo.weight += ship.weight * quantity
+    cargo.volume += ship.volume * quantity
     if (cargo.ships[ship.shipName]) { quantity += cargo.ships[ship.shipName].quantity }
     cargo.ships[ship.shipName] = { quantity: quantity, stats: ship }
-    cargo.weight += ship.weight
-    cargo.volume += ship.volume
     document.querySelector('#cargoDiv h2').innerText = `Cargo (${cargo.weight.toLocaleString()}T / ${cargo.volume.toLocaleString()}m³ )`
 }
-
-
-//got too tired of typing the whole thing out
-function ce(arg) { return document.createElement(arg) }
 
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms))

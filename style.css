@@ -15,13 +15,17 @@ body {
     max-width: 50vw;
 }
 
-#cargoDiv {
+.poorlyNamedFormat {
     max-width: 50vw;
     display: grid;
     grid-template-columns: 2fr 1fr 1fr 1fr;
 }
 
-#cargoDiv h2:first-child {
+div h2:first-child {
     grid-column: 1/5;
     text-align: center;
+}
+
+.hidden {
+    visibility: hidden;
 }
