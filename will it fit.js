@@ -9,7 +9,7 @@ if (isLoaded) {
     while(document.querySelector('.hidden')) {
         document.querySelector('.hidden').classList.remove('hidden')
     }
-
+    
     const select = document.createElement('select')
     select.oninput = updateSelected //update selected entity stats
     shipList.map((element) => { //populate dropdown
@@ -18,13 +18,21 @@ if (isLoaded) {
         select.appendChild(option)
     })
     document.querySelector('#selectorDiv').insertBefore(select, document.querySelector('span'))
+
+    let quantity = document.querySelector('#quantity').innerText
+    document.querySelector('#weight').innerText = findShip().weight.toLocaleString()
+    document.querySelector('#volume').innerText = findShip().volume.toLocaleString()
+    document.querySelector('#total-weight').innerText = (findShip().weight * quantity).toLocaleString()
+    document.querySelector('#total-volume').innerText = (findShip().volume * quantity).toLocaleString()
 }
 
 
 
 
 
-
+function findShip() {
+    return shipList.find((ship) => { return ship.shipName === document.querySelector('select').value })
+}
 
 function updateSelected() {
     const weight = shipList.find((ship) => { return ship.shipName === document.querySelector('select').value }).weight
@@ -42,7 +50,7 @@ function addCargo() {
     const cargoDivHeaders = ['shipName', 'quantity', 'weight', 'volume']
     let quantity = +document.querySelector('#quantity-input').value
     cargoDivHeaders.map((element) => {
-        const p = ce('p')
+        const p = document.createElement('p')
         if (element != 'quantity') {
             p.innerText = ship[element].toLocaleString()
         } else {
