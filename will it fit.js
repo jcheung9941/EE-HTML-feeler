@@ -76,21 +76,21 @@ function addCargo() {
     const single = shipList.filter((ship) => {
         if (ship.isDocking && ship.weightCapacity >= cargo.weight && ship.volumeCapacity >= cargo.volume) { return true } else { return false }
     })
-    addNewLine(single, 'single')
+    addNewLine('single', single)
 
     const squad = shipList.filter((ship) => {
         if (ship.isDocking && ship.weightCapacity * Math.floor(12 / ship.party) >= cargo.weight && ship.volumeCapacity * Math.floor(12 / ship.party) >= cargo.volume) { return true } else { return false }
     })
-    addNewLine(squad, 'squad')
+    addNewLine('squad', squad)
 }
 
-function addNewLine(ships, id) {
+function addNewLine(id, ships = []) {
     while (document.querySelector(`#${id} p`)) { // todo: see if there's a better way to do this
         document.querySelector(`#${id} p`).parentNode.removeChild(document.querySelector(`#${id} p`))
     }
     if (ships.length === 0) {
         const p = document.createElement('p')
-        p.innerText = 'no match'
+        p.innerText = 'no match found'
         document.querySelector(`#${id}`).appendChild(p)
         return
     }
@@ -112,6 +112,18 @@ function addNewLine(ships, id) {
 function resetType() {
     document.querySelector('#ship-input').value = ''
     document.querySelector('#quantity-input').value = 1
+}
+
+function resetAll() {
+    resetType()
+    cargo.weight = 0
+    cargo.volume = 0
+    cargo.ships = {}
+    while (document.querySelector(`#cargoDiv p`)) {
+        document.querySelector(`#cargoDiv p`).parentNode.removeChild(document.querySelector(`#cargoDiv p`))
+    }
+    addNewLine('single')
+    addNewLine('squad')
 }
 
 function sleep(ms) {

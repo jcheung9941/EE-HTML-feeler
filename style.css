@@ -2,11 +2,25 @@ nav ul {
     list-style: none;
     display: flex;
     justify-content: space-around;
-    
+
 }
 
 body {
     background-color: #D3D3D3;
+}
+
+#main {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+}
+
+#inputDiv,
+#single,
+#squad {
+    border: solid 1px black;
+    margin: 5px;
+    padding: 05px;
+    text-align: center;
 }
 
 #statDiv {
@@ -16,11 +30,11 @@ body {
 }
 
 #ship-input {
-    width: 350px;
+    width: 275px;
     text-align: center;
 }
 
-#quantity-input{
+#quantity-input {
     width: 50px;
     text-align: center;
 }

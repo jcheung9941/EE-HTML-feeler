@@ -20,43 +20,44 @@
     </nav>
 
     <div id="main">
-        <p id="loading">Loading...</p>
-        <div id="selectorDiv" class="hidden">
-            <input id="ship-input" list="shipOptions" oninput="updateSelected()" placeholder="N-1 Starfighter" />
-            <span> * </span>
-            <input type="number" id="quantity-input" oninput="updateSelected()" value="1">
-            <button onclick="addCargo()">Add</button>
-            <button onclick="resetType()">Reset type</button>
+        <div id="inputDiv">
+            <p id="loading">Loading...</p>
+            <div id="selectorDiv" class="hidden">
+                <input id="ship-input" list="shipOptions" oninput="updateSelected()" placeholder="N-1 Starfighter" />
+                <span> * </span>
+                <input type="number" id="quantity-input" oninput="updateSelected()" value="1">
+                <button onclick="addCargo()">Add</button>
+                <button onclick="resetType()">Reset type</button>
+                <button onclick="resetAll()" >Reset All</button>
+            </div>
+            <div id="statDiv" class="hidden">
+                <p>Weight: <span id="weight">0</span></p>
+                <p>Volume: <span id="volume">0</span></p>
+                <p>Quantity: <span id="quantity">1</span></p>
+                <p>Total weight: <span id="total-weight">0</span></p>
+                <p>Total volume: <span id="total-volume">0</span></p>
+            </div>
+            <div id="cargoDiv" class="hidden poorlyNamedFormat">
+                <h2>Cargo</h2>
+                <h3>Name</h3>
+                <h3>Quantity</h3>
+                <h3>Weight</h3>
+                <h3>Volume</h3>
+            </div>
         </div>
-        <div id="statDiv" class="hidden">
-            <p>Weight: <span id="weight">0</span></p>
-            <p>Volume: <span id="volume">0</span></p>
-            <p>Quantity: <span id="quantity">1</span></p>
-            <p>Total weight: <span id="total-weight">0</span></p>
-            <p>Total volume: <span id="total-volume">0</span></p>
-        </div>
-        <div id="cargoDiv" class="hidden poorlyNamedFormat">
-            <h2>Cargo</h2>
+        <div id="single" class="hidden poorlyNamedFormat">
+            <h2>Can be carried by a single</h2>
             <h3>Name</h3>
+            <h3>Hyper speed</h3>
             <h3>Quantity</h3>
-            <h3>Weight</h3>
-            <h3>Volume</h3>
+            <h3>Squad size</h3>
         </div>
-        <div id="resultDiv" class="hidden">
-            <div id="single" class="poorlyNamedFormat">
-                <h2>Can be carried by a single</h2>
-                <h3>Name</h3>
-                <h3>Hyper speed</h3>
-                <h3>Quantity</h3>
-                <h3>Squad size</h3>
-            </div>
-            <div id="squad" class="poorlyNamedFormat">
-                <h2>Can be carried by squad of</h2>
-                <h3>Name</h3>
-                <h3>Hyper speed</h3>
-                <h3>Quantity</h3>
-                <h3>Squad size</h3>
-            </div>
+        <div id="squad" class="hidden poorlyNamedFormat">
+            <h2>Can be carried by squad of</h2>
+            <h3>Name</h3>
+            <h3>Hyper speed</h3>
+            <h3>Quantity</h3>
+            <h3>Squad size</h3>
         </div>
     </div>
 
