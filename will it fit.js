@@ -19,12 +19,6 @@ if (isLoaded) {
         dataList.appendChild(option)
     })
     document.querySelector('#selectorDiv').insertBefore(dataList, document.querySelector('span'))
-
-    let quantity = document.querySelector('#quantity').innerText
-    document.querySelector('#weight').innerText = findShip().weight.toLocaleString()
-    document.querySelector('#volume').innerText = findShip().volume.toLocaleString()
-    document.querySelector('#total-weight').innerText = (findShip().weight * quantity).toLocaleString()
-    document.querySelector('#total-volume').innerText = (findShip().volume * quantity).toLocaleString()
 }
 
 function findShip() {
