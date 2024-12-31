@@ -22,7 +22,11 @@
     <div id="main">
         <p id="loading">Loading...</p>
         <div id="selectorDiv" class="hidden">
-            <span> * </span><input type="number" name="quantity" id="quantity-input" oninput="updateSelected()" value="1"><button onclick="addCargo()">Add</button>
+            <input id="ship-input" list="shipOptions" oninput="updateSelected()" placeholder="N-1 Starfighter" />
+            <span> * </span>
+            <input type="number" id="quantity-input" oninput="updateSelected()" value="1">
+            <button onclick="addCargo()">Add</button>
+            <button onclick="resetType()">Reset type</button>
         </div>
         <div id="statDiv" class="hidden">
             <p>Weight: <span id="weight">0</span></p>

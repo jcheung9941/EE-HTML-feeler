@@ -11,14 +11,14 @@ if (isLoaded) {
         document.querySelector('.hidden').classList.remove('hidden')
     }
 
-    const select = document.createElement('select')
-    select.oninput = updateSelected //update selected entity stats
+    const dataList = document.createElement('datalist')
+    dataList.id = 'shipOptions'
     shipList.forEach((element) => { //populate dropdown
         const option = document.createElement('option')
         option.innerText = element.shipName
-        select.appendChild(option)
+        dataList.appendChild(option)
     })
-    document.querySelector('#selectorDiv').insertBefore(select, document.querySelector('span'))
+    document.querySelector('#selectorDiv').insertBefore(dataList, document.querySelector('span'))
 
     let quantity = document.querySelector('#quantity').innerText
     document.querySelector('#weight').innerText = findShip().weight.toLocaleString()
@@ -28,12 +28,12 @@ if (isLoaded) {
 }
 
 function findShip() {
-    return shipList.find((ship) => { return ship.shipName === document.querySelector('select').value })
+    return shipList.find((ship) => { return ship.shipName === document.querySelector('#ship-input').value })
 }
 
 function updateSelected() {
-    const weight = shipList.find((ship) => { return ship.shipName === document.querySelector('select').value }).weight
-    const volume = shipList.find((ship) => { return ship.shipName === document.querySelector('select').value }).volume
+    const weight = shipList.find((ship) => { return ship.shipName === document.querySelector('#ship-input').value }).weight
+    const volume = shipList.find((ship) => { return ship.shipName === document.querySelector('#ship-input').value }).volume
     const quantity = +document.querySelector('#quantity-input').value
     document.querySelector('#weight').innerText = weight.toLocaleString()
     document.querySelector('#volume').innerText = volume.toLocaleString()
@@ -50,7 +50,7 @@ function addCargo() {
     while (document.querySelector(`#cargoDiv p`)) {
         document.querySelector(`#cargoDiv p`).parentNode.removeChild(document.querySelector(`#cargoDiv p`))
     }
-    const ship = shipList.find((ship) => { return ship.shipName === document.querySelector('select').value })
+    const ship = shipList.find((ship) => { return ship.shipName === document.querySelector('#ship-input').value })
     let quantity = +document.querySelector('#quantity-input').value
     cargo.weight += ship.weight * quantity
     cargo.volume += ship.volume * quantity
@@ -77,7 +77,7 @@ function addCargo() {
         if (ship.weightCapacity >= cargo.weight && ship.volumeCapacity >= cargo.volume && ship.isDocking) { return true } else { return false }
     })
     addNewLine(single, 'single')
-
+//
 
 }
 
@@ -103,6 +103,11 @@ function addNewLine(ships, id) {
             document.querySelector(`#${id}`).appendChild(p)
         })
     })
+}
+
+function resetType() {
+    document.querySelector('#ship-input').value = ''
+    document.querySelector('#quantity-input').value = 1
 }
 
 function sleep(ms) {
