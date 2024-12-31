@@ -73,12 +73,15 @@ function addCargo() {
     })
     document.querySelector('#cargoDiv h2').innerText = `Cargo (${cargo.weight.toLocaleString()}T / ${cargo.volume.toLocaleString()}m³ )`
 
-    let single = shipList.filter((ship) => {
-        if (ship.weightCapacity >= cargo.weight && ship.volumeCapacity >= cargo.volume && ship.isDocking) { return true } else { return false }
+    const single = shipList.filter((ship) => {
+        if (ship.isDocking && ship.weightCapacity >= cargo.weight && ship.volumeCapacity >= cargo.volume) { return true } else { return false }
     })
     addNewLine(single, 'single')
-//
 
+    const squad = shipList.filter((ship) => {
+        if (ship.isDocking && ship.weightCapacity * Math.floor(12 / ship.party) >= cargo.weight && ship.volumeCapacity * Math.floor(12 / ship.party) >= cargo.volume) { return true } else { return false }
+    })
+    addNewLine(squad, 'squad')
 }
 
 function addNewLine(ships, id) {
@@ -95,10 +98,11 @@ function addNewLine(ships, id) {
     ships.forEach((ship) => {
         divHeaders.forEach((element) => {
             const p = document.createElement('p')
-            if (element != 'qty') {
+            if (element != 'qty' && element != 'party') {
                 p.innerText = ship[element].toLocaleString()
             } else {
-                p.innerText = Math.floor(Math.ceil(cargo.weight / ship.weightCapacity, cargo.volume / ship.volumeCapacity))
+                let qty = Math.floor(Math.ceil(cargo.weight / ship.weightCapacity, cargo.volume / ship.volumeCapacity))
+                p.innerText = element === 'qty' ? qty : ship[element] * qty
             }
             document.querySelector(`#${id}`).appendChild(p)
         })
