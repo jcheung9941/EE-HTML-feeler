@@ -44,16 +44,6 @@ function addCargo() {
     if (cargo.ships[ship.shipName]) { quantity += cargo.ships[ship.shipName].quantity }
     cargo.ships[ship.shipName] = { quantity: quantity, stats: ship }
     updateCargo()
-
-    const single = shipList.filter((ship) => {
-        if (ship.isDocking && ship.weightCapacity >= cargo.weight && ship.volumeCapacity >= cargo.volume) { return true } else { return false }
-    })
-    updateCarried('single', single)
-
-    const squad = shipList.filter((ship) => {
-        if (ship.isDocking && ship.weightCapacity * Math.floor(12 / ship.party) >= cargo.weight && ship.volumeCapacity * Math.floor(12 / ship.party) >= cargo.volume) { return true } else { return false }
-    })
-    updateCarried('squad', squad)
 }
 
 function edit() {
@@ -89,6 +79,16 @@ function updateCargo() {
         })
     })
     document.querySelector('#cargoDiv h2').innerText = `Cargo (${cargo.weight.toLocaleString()}T / ${cargo.volume.toLocaleString()}m³ )`
+
+    const single = shipList.filter((ship) => {
+        if (ship.isDocking && ship.weightCapacity >= cargo.weight && ship.volumeCapacity >= cargo.volume) { return true } else { return false }
+    })
+    updateCarried('single', single)
+
+    const squad = shipList.filter((ship) => {
+        if (ship.isDocking && ship.weightCapacity * Math.floor(12 / ship.party) >= cargo.weight && ship.volumeCapacity * Math.floor(12 / ship.party) >= cargo.volume) { return true } else { return false }
+    })
+    updateCarried('squad', squad)
 }
 
 function updateCarried(id, ships = []) {
