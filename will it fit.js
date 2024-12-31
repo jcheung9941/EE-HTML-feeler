@@ -26,8 +26,8 @@ function findShip() {
 }
 
 function updateSelected() {
-    const weight = shipList.find((ship) => { return ship.shipName === document.querySelector('#ship-input').value }).weight
-    const volume = shipList.find((ship) => { return ship.shipName === document.querySelector('#ship-input').value }).volume
+    const weight = findShip().weight
+    const volume = findShip().volume
     const quantity = +document.querySelector('#quantity-input').value
     document.querySelector('#weight').innerText = weight.toLocaleString()
     document.querySelector('#volume').innerText = volume.toLocaleString()
@@ -37,7 +37,7 @@ function updateSelected() {
 }
 
 function addCargo() {
-    const ship = shipList.find((ship) => { return ship.shipName === document.querySelector('#ship-input').value })
+    const ship = findShip()
     let quantity = +document.querySelector('#quantity-input').value
     cargo.weight += ship.weight * quantity
     cargo.volume += ship.volume * quantity
