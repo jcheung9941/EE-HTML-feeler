@@ -64,9 +64,9 @@ function addCargo() {
             if (element != 'shipName' && element != 'quantity') {
                 p.innerText = `${(cargoShip.quantity * cargoShip.stats[element]).toLocaleString()} (${cargoShip.stats[element].toLocaleString()})`
             } else if (element === 'quantity') {
-                p.innerText = quantity.toLocaleString()
+                p.innerText = cargoShip.quantity.toLocaleString()
             } else {
-                p.innerText = cargoShip.shipName
+                p.innerText = key
             }
             cargoDiv.appendChild(p)
         })
