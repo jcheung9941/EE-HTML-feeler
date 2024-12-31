@@ -37,19 +37,38 @@ function updateSelected() {
 }
 
 function addCargo() {
-    // todo:
-    // add ability to combine like entities
-    // add ability to remove entities
-    // check if can figure out how to see performance cost of redrawing entire list vs replacing nodes
-    while (document.querySelector(`#cargoDiv p`)) {
-        document.querySelector(`#cargoDiv p`).parentNode.removeChild(document.querySelector(`#cargoDiv p`))
-    }
     const ship = shipList.find((ship) => { return ship.shipName === document.querySelector('#ship-input').value })
     let quantity = +document.querySelector('#quantity-input').value
     cargo.weight += ship.weight * quantity
     cargo.volume += ship.volume * quantity
     if (cargo.ships[ship.shipName]) { quantity += cargo.ships[ship.shipName].quantity }
     cargo.ships[ship.shipName] = { quantity: quantity, stats: ship }
+    updateCargo()
+
+    const single = shipList.filter((ship) => {
+        if (ship.isDocking && ship.weightCapacity >= cargo.weight && ship.volumeCapacity >= cargo.volume) { return true } else { return false }
+    })
+    updateCarried('single', single)
+
+    const squad = shipList.filter((ship) => {
+        if (ship.isDocking && ship.weightCapacity * Math.floor(12 / ship.party) >= cargo.weight && ship.volumeCapacity * Math.floor(12 / ship.party) >= cargo.volume) { return true } else { return false }
+    })
+    updateCarried('squad', squad)
+}
+
+function edit() {
+    const ship = cargo.ships[this.parentNode.previousSibling.innerText]
+    cargo.weight += ship.stats.weight * (+this.value - ship.quantity)
+    cargo.volume += ship.stats.volume * (+this.value - ship.quantity)
+    ship.quantity = +this.value
+    updateCargo()
+}
+
+function updateCargo() {
+    // todo: check if can figure out how to see performance cost of redrawing entire list vs replacing nodes
+    while (document.querySelector(`#cargoDiv p`)) {
+        document.querySelector(`#cargoDiv p`).parentNode.removeChild(document.querySelector(`#cargoDiv p`))
+    }
     const cargoDivHeaders = ['shipName', 'quantity', 'weight', 'volume']
     Object.keys(cargo.ships).forEach((key) => {
         const cargoShip = cargo.ships[key]
@@ -58,7 +77,11 @@ function addCargo() {
             if (element != 'shipName' && element != 'quantity') {
                 p.innerText = `${(cargoShip.quantity * cargoShip.stats[element]).toLocaleString()} (${cargoShip.stats[element].toLocaleString()})`
             } else if (element === 'quantity') {
-                p.innerText = cargoShip.quantity.toLocaleString()
+                const editQuantity = document.createElement('input')
+                editQuantity.type = 'number'
+                editQuantity.value = cargoShip.quantity
+                editQuantity.onchange = edit
+                p.appendChild(editQuantity)
             } else {
                 p.innerText = key
             }
@@ -66,19 +89,9 @@ function addCargo() {
         })
     })
     document.querySelector('#cargoDiv h2').innerText = `Cargo (${cargo.weight.toLocaleString()}T / ${cargo.volume.toLocaleString()}m³ )`
-
-    const single = shipList.filter((ship) => {
-        if (ship.isDocking && ship.weightCapacity >= cargo.weight && ship.volumeCapacity >= cargo.volume) { return true } else { return false }
-    })
-    addNewLine('single', single)
-
-    const squad = shipList.filter((ship) => {
-        if (ship.isDocking && ship.weightCapacity * Math.floor(12 / ship.party) >= cargo.weight && ship.volumeCapacity * Math.floor(12 / ship.party) >= cargo.volume) { return true } else { return false }
-    })
-    addNewLine('squad', squad)
 }
 
-function addNewLine(id, ships = []) {
+function updateCarried(id, ships = []) {
     while (document.querySelector(`#${id} p`)) { // todo: see if there's a better way to do this
         document.querySelector(`#${id} p`).parentNode.removeChild(document.querySelector(`#${id} p`))
     }
@@ -116,8 +129,8 @@ function resetAll() {
     while (document.querySelector(`#cargoDiv p`)) {
         document.querySelector(`#cargoDiv p`).parentNode.removeChild(document.querySelector(`#cargoDiv p`))
     }
-    addNewLine('single')
-    addNewLine('squad')
+    updateCarried('single')
+    updateCarried('squad')
 }
 
 function sleep(ms) {
@@ -134,7 +147,7 @@ async function getShipUid() {
         while (resAttributes.start - 1 < +resAttributes.total) {
             const response = await fetch(
                 `https://corsproxy.io/?url=https://www.swcombine.com/ws/v2.0/types/ships?start_index=${resAttributes.start}`,
-                { headers: { Accept: "application/json" }, }
+                { headers: { Accept: 'application/json' }, }
             )
             const data = await response.json()
 
@@ -161,7 +174,7 @@ async function getShipDetails() {
                 loading.innerText = `Loading... ${i}/${shipList.length} ship details imported`
                 const response = await fetch(
                     `https://corsproxy.io/?url=https://www.swcombine.com/ws/v2.0/types/ships/${element.uid}`,
-                    { headers: { Accept: "application/json" }, }
+                    { headers: { Accept: 'application/json' }, }
                 )
                 let data = await response.json()
                 data = data.swcapi.shiptype
@@ -175,13 +188,13 @@ async function getShipDetails() {
                     volumeCapacity: data.volumecapacity.value,
                     passengers: data.maxpassengers,
                     party: data.slotsize,
-                    isHangar: data.hangarbay === "yes" ? true : false,
-                    isDocking: data.dockingbay === "yes" ? true : false,
+                    isHangar: data.hangarbay === 'yes' ? true : false,
+                    isDocking: data.dockingbay === 'yes' ? true : false,
                     images: data.images,
                 }
 
                 if (i + 1 === shipList.length) { isLoaded = true } //eh. doesn't actually work, probably need to convert if(isLoaded) to a function
-                console.log("counter:", i, "details:", shipList)
+                console.log('counter:', i, 'details:', shipList)
             })
 
     });

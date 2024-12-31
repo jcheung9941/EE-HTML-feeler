@@ -11,7 +11,7 @@ body {
 
 #main {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: 3fr 2fr 2fr;
 }
 
 #inputDiv,
@@ -29,13 +29,13 @@ body {
     max-width: 50vw;
 }
 
-#ship-input {
-    width: 275px;
+input {
+    width: 50px;
     text-align: center;
 }
 
-#quantity-input {
-    width: 50px;
+#ship-input {
+    width: 275px;
     text-align: center;
 }
 
