@@ -1,11 +1,13 @@
 const shipList = arr
 // const shipList =[]
-// getShipDetails() //disable =arr if this is active
+// getShipDetails() //disable =arr if this is active. use to build shipList array
 const cargo = { weight: 0, volume: 0, ships: {} }
 
 let isLoaded = true //default false. probably state. if done at all.
 const loading = document.getElementById('loading')
-if (isLoaded) {
+if (isLoaded) {loadPage()}
+
+function loadPage() {
     loading.parentNode.removeChild(loading)
     while (document.querySelector('.hidden')) {
         document.querySelector('.hidden').classList.remove('hidden')
@@ -19,10 +21,6 @@ if (isLoaded) {
         dataList.appendChild(option)
     })
     document.querySelector('#selectorDiv').insertBefore(dataList, document.querySelector('span'))
-}
-
-function findShip() {
-    return shipList.find((ship) => { return ship.shipName === document.querySelector('#ship-input').value })
 }
 
 function updateSelected() {
@@ -43,14 +41,6 @@ function addCargo() {
     cargo.volume += ship.volume * quantity
     if (cargo.ships[ship.shipName]) { quantity += cargo.ships[ship.shipName].quantity }
     cargo.ships[ship.shipName] = { quantity: quantity, stats: ship }
-    updateCargo()
-}
-
-function edit() {
-    const ship = cargo.ships[this.parentNode.previousSibling.innerText]
-    cargo.weight += ship.stats.weight * (+this.value - ship.quantity)
-    cargo.volume += ship.stats.volume * (+this.value - ship.quantity)
-    ship.quantity = +this.value
     updateCargo()
 }
 
@@ -133,10 +123,23 @@ function resetAll() {
     updateCarried('squad')
 }
 
+function edit() {
+    const ship = cargo.ships[this.parentNode.previousSibling.innerText]
+    cargo.weight += ship.stats.weight * (+this.value - ship.quantity)
+    cargo.volume += ship.stats.volume * (+this.value - ship.quantity)
+    ship.quantity = +this.value
+    updateCargo()
+}
+
+function findShip() {
+    return shipList.find((ship) => { return ship.shipName === document.querySelector('#ship-input').value })
+}
+
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms))
 }
 
+//getShipDetails & getShipUid to generate shipList array
 async function getShipUid() {
     let resAttributes = {
         count: 0,
@@ -193,8 +196,8 @@ async function getShipDetails() {
                     images: data.images,
                 }
 
-                if (i + 1 === shipList.length) { isLoaded = true } //eh. doesn't actually work, probably need to convert if(isLoaded) to a function
                 console.log('counter:', i, 'details:', shipList)
+                if (i + 1 === shipList.length) { isLoaded = true; loadPage() } //need to test
             })
 
     });
