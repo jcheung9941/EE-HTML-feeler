@@ -52,20 +52,22 @@ function addCargo() {
     }
     const ship = shipList.find((ship) => { return ship.shipName === document.querySelector('select').value })
     let quantity = +document.querySelector('#quantity-input').value
-    const cargoDivHeaders = ['shipName', 'quantity', 'weight', 'volume']
-    cargoDivHeaders.forEach((element) => {
-        const p = document.createElement('p')
-        if (element != 'quantity') {
-            p.innerText = ship[element].toLocaleString()
-        } else {
-            p.innerText = quantity.toLocaleString()
-        }
-        cargoDiv.appendChild(p)
-    })
     cargo.weight += ship.weight * quantity
     cargo.volume += ship.volume * quantity
     if (cargo.ships[ship.shipName]) { quantity += cargo.ships[ship.shipName].quantity }
     cargo.ships[ship.shipName] = { quantity: quantity, stats: ship }
+    const cargoDivHeaders = ['shipName', 'quantity', 'weight', 'volume']
+    cargoDivHeaders.forEach((element) => {
+        const p = document.createElement('p')
+        if (element != 'shipName' && element != 'quantity') {
+            p.innerText = `${(cargo.ships[ship.shipName].quantity * ship[element]).toLocaleString()} (${ship[element].toLocaleString()})`
+        } else if (element === 'quantity') {
+            p.innerText = quantity.toLocaleString()
+        } else {
+            p.innerText = ship.shipName
+        }
+        cargoDiv.appendChild(p)
+    })
     document.querySelector('#cargoDiv h2').innerText = `Cargo (${cargo.weight.toLocaleString()}T / ${cargo.volume.toLocaleString()}m³ )`
 
     let single = shipList.filter((ship) => {
