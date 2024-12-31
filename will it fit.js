@@ -57,23 +57,25 @@ function addCargo() {
     if (cargo.ships[ship.shipName]) { quantity += cargo.ships[ship.shipName].quantity }
     cargo.ships[ship.shipName] = { quantity: quantity, stats: ship }
     const cargoDivHeaders = ['shipName', 'quantity', 'weight', 'volume']
-    cargoDivHeaders.forEach((element) => {
-        const p = document.createElement('p')
-        if (element != 'shipName' && element != 'quantity') {
-            p.innerText = `${(cargo.ships[ship.shipName].quantity * ship[element]).toLocaleString()} (${ship[element].toLocaleString()})`
-        } else if (element === 'quantity') {
-            p.innerText = quantity.toLocaleString()
-        } else {
-            p.innerText = ship.shipName
-        }
-        cargoDiv.appendChild(p)
+    Object.keys(cargo.ships).forEach((key) => {
+        const cargoShip = cargo.ships[key]
+        cargoDivHeaders.forEach((element) => {
+            const p = document.createElement('p')
+            if (element != 'shipName' && element != 'quantity') {
+                p.innerText = `${(cargoShip.quantity * cargoShip.stats[element]).toLocaleString()} (${cargoShip.stats[element].toLocaleString()})`
+            } else if (element === 'quantity') {
+                p.innerText = quantity.toLocaleString()
+            } else {
+                p.innerText = cargoShip.shipName
+            }
+            cargoDiv.appendChild(p)
+        })
     })
     document.querySelector('#cargoDiv h2').innerText = `Cargo (${cargo.weight.toLocaleString()}T / ${cargo.volume.toLocaleString()}m³ )`
 
     let single = shipList.filter((ship) => {
         if (ship.weightCapacity >= cargo.weight && ship.volumeCapacity >= cargo.volume && ship.isDocking) { return true } else { return false }
     })
-    console.log(single) //
     addNewLine(single, 'single')
 
 
@@ -83,7 +85,7 @@ function addNewLine(ships, id) {
     while (document.querySelector(`#${id} p`)) { // todo: see if there's a better way to do this
         document.querySelector(`#${id} p`).parentNode.removeChild(document.querySelector(`#${id} p`))
     }
-    if(ships.length === 0) {
+    if (ships.length === 0) {
         const p = document.createElement('p')
         p.innerText = 'no match'
         document.querySelector(`#${id}`).appendChild(p)
