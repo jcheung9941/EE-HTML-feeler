@@ -83,6 +83,12 @@ function addNewLine(ships, id) {
     while (document.querySelector(`#${id} p`)) { // todo: see if there's a better way to do this
         document.querySelector(`#${id} p`).parentNode.removeChild(document.querySelector(`#${id} p`))
     }
+    if(ships.length === 0) {
+        const p = document.createElement('p')
+        p.innerText = 'no match'
+        document.querySelector(`#${id}`).appendChild(p)
+        return
+    }
     const divHeaders = ['shipName', 'hyper', 'qty', 'party']
     ships.forEach((ship) => {
         divHeaders.forEach((element) => {
